@@ -2,9 +2,12 @@ export const BEADS_PER_WIRE = 10;
 export const MIN_WIRE_COUNT = 1;
 export const DEFAULT_WIRE_COUNT = 5;
 export const MIN_ACTIVE_BEAD_COUNT = 0;
-export const MAX_ACTIVE_BEAD_COUNT = BEADS_PER_WIRE - 1;
+export const MAX_ACTIVE_BEAD_COUNT = BEADS_PER_WIRE;
+export const MIN_BEAD_INDEX = 0;
+export const MAX_BEAD_INDEX = BEADS_PER_WIRE - 1;
 
 export type WireIndex = number;
+export type BeadIndex = number;
 export type DecimalPlace = number;
 export type ActiveBeadCount = number;
 
@@ -41,6 +44,14 @@ export function isValidActiveBeadCount(
     Number.isInteger(activeBeadCount) &&
     activeBeadCount >= MIN_ACTIVE_BEAD_COUNT &&
     activeBeadCount <= MAX_ACTIVE_BEAD_COUNT
+  );
+}
+
+export function isValidBeadIndex(beadIndex: number): beadIndex is BeadIndex {
+  return (
+    Number.isInteger(beadIndex) &&
+    beadIndex >= MIN_BEAD_INDEX &&
+    beadIndex <= MAX_BEAD_INDEX
   );
 }
 
@@ -148,4 +159,79 @@ export function computeActiveBeadCountsValue(
   }
 
   return value;
+}
+
+export function getActiveBeadCountAfterClick(
+  currentActiveBeadCount: ActiveBeadCount,
+  beadIndex: BeadIndex,
+): ActiveBeadCount {
+  if (!isValidActiveBeadCount(currentActiveBeadCount)) {
+    throw new RangeError(
+      `Current active bead count must be an integer from ${MIN_ACTIVE_BEAD_COUNT} to ${MAX_ACTIVE_BEAD_COUNT}.`,
+    );
+  }
+
+  if (!isValidBeadIndex(beadIndex)) {
+    throw new RangeError(
+      `Bead index must be an integer from ${MIN_BEAD_INDEX} to ${MAX_BEAD_INDEX}.`,
+    );
+  }
+
+  if (beadIndex < currentActiveBeadCount) {
+    return beadIndex;
+  }
+
+  return beadIndex + 1;
+}
+
+export function slideWireBead(
+  wire: WireState,
+  beadIndex: BeadIndex,
+): WireState {
+  return {
+    ...wire,
+    activeBeadCount: getActiveBeadCountAfterClick(
+      wire.activeBeadCount,
+      beadIndex,
+    ),
+  };
+}
+
+export function slideAbacusBead(
+  state: AbacusState,
+  wireIndex: WireIndex,
+  beadIndex: BeadIndex,
+): AbacusState {
+  if (state.beadCountPerWire !== BEADS_PER_WIRE) {
+    throw new RangeError(
+      `Abacus state must use ${BEADS_PER_WIRE} beads per wire.`,
+    );
+  }
+
+  const targetWire = state.wires.find((wire) => wire.index === wireIndex);
+
+  if (!targetWire) {
+    throw new RangeError(`Wire index ${wireIndex} does not exist.`);
+  }
+
+  return {
+    ...state,
+    wires: state.wires.map((wire) =>
+      wire.index === wireIndex ? slideWireBead(wire, beadIndex) : wire,
+    ),
+  };
+}
+
+export function resetWireState(wire: WireState): WireState {
+  return {
+    ...wire,
+    activeBeadCount: MIN_ACTIVE_BEAD_COUNT,
+  };
+}
+
+export function resetAbacusState(state: AbacusState): AbacusState {
+  return {
+    ...state,
+    wires: state.wires.map(resetWireState),
+  };
 }
