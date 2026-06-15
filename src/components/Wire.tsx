@@ -65,7 +65,7 @@ export function Wire({
     <div
       aria-label={`Decimal place ${wire.decimalPlace}, ${wire.activeBeadCount} active beads`}
       className={[
-        'relative flex min-h-14 w-full items-center gap-4 py-2',
+        'relative flex min-h-[clamp(2.75rem,11vw,3.5rem)] w-full items-center py-1.5 sm:py-2',
         className,
       ].join(' ')}
       data-active-bead-count={wire.activeBeadCount}
@@ -75,11 +75,14 @@ export function Wire({
         aria-hidden="true"
         className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-slate-700"
       />
-      <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1.5">
-        {activeBeads.map((beadIndex) => renderBead(beadIndex, true))}
-      </div>
-      <div className="relative z-10 flex min-w-0 flex-1 items-center justify-end gap-1.5">
-        {inactiveBeads.map((beadIndex) => renderBead(beadIndex))}
+      <div className="relative z-10 flex w-full items-center gap-1">
+        <div className="flex min-w-0 items-center gap-0.5 sm:gap-1.5">
+          {activeBeads.map((beadIndex) => renderBead(beadIndex, true))}
+        </div>
+        <div className="min-w-3 flex-1" />
+        <div className="flex min-w-0 items-center justify-end gap-0.5 sm:gap-1.5">
+          {inactiveBeads.map((beadIndex) => renderBead(beadIndex))}
+        </div>
       </div>
     </div>
   );

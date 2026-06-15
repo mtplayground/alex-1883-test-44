@@ -29,9 +29,10 @@ export function Bead({
       type="button"
       aria-label={`Bead ${index + 1}, ${isActive ? 'active' : 'inactive'}`}
       className={[
-        'relative z-10 h-9 w-9 shrink-0 rounded-full border',
-        'cursor-pointer touch-none transition-colors duration-150 sm:h-10 sm:w-10',
+        'relative z-10 h-[clamp(1.25rem,6vw,2.5rem)] w-[clamp(1.25rem,6vw,2.5rem)] shrink-0 rounded-full border',
+        'cursor-grab touch-none transition-[background-color,box-shadow,transform] duration-150 active:cursor-grabbing active:scale-95 hover:scale-105',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700',
+        'hover:ring-2 hover:ring-teal-300 hover:ring-offset-1 hover:ring-offset-stone-100',
         stateClasses,
         className,
       ].join(' ')}
