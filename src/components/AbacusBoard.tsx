@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   DEFAULT_WIRE_COUNT,
   createAbacusState,
   isValidWireCount,
+  slideAbacusBead,
 } from '../domain/abacus';
-import type { AbacusState } from '../domain/abacus';
+import type { AbacusState, BeadIndex, WireIndex } from '../domain/abacus';
 import { Wire } from './Wire';
 
 export interface AbacusBoardProps {
@@ -23,13 +24,38 @@ export function AbacusBoard({
     throw new RangeError('Abacus board wire count must be a positive integer.');
   }
 
-  const [boardState] = useState<AbacusState>(() => {
+  const [boardState, setBoardState] = useState<AbacusState>(() => {
     if (initialState) {
       return initialState;
     }
 
     return createAbacusState({ wireCount });
   });
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!isDragging) {
+      return undefined;
+    }
+
+    const stopDragging = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener('pointercancel', stopDragging);
+    window.addEventListener('pointerup', stopDragging);
+
+    return () => {
+      window.removeEventListener('pointercancel', stopDragging);
+      window.removeEventListener('pointerup', stopDragging);
+    };
+  }, [isDragging]);
+
+  const handleBeadSlide = (wireIndex: WireIndex, beadIndex: BeadIndex) => {
+    setBoardState((currentState) =>
+      slideAbacusBead(currentState, wireIndex, beadIndex),
+    );
+  };
 
   const displayWires = [...boardState.wires].reverse();
 
@@ -43,7 +69,15 @@ export function AbacusBoard({
         <div className="rounded border border-amber-900/30 bg-stone-100 px-4 py-5 sm:px-6">
           <div className="flex flex-col gap-2">
             {displayWires.map((wire) => (
-              <Wire key={wire.index} wire={wire} />
+              <Wire
+                isDragging={isDragging}
+                key={wire.index}
+                onBeadDragStart={() => {
+                  setIsDragging(true);
+                }}
+                onBeadSlide={handleBeadSlide}
+                wire={wire}
+              />
             ))}
           </div>
         </div>
