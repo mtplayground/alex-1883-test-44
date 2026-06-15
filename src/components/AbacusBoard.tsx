@@ -77,9 +77,9 @@ export function AbacusBoard({
         <ResetControl onReset={handleReset} />
       </div>
 
-      <div className="rounded-lg border-[10px] border-amber-950 bg-stone-200 p-4 shadow-xl shadow-slate-950/20 sm:p-6">
-        <div className="rounded border border-amber-900/30 bg-stone-100 px-4 py-5 sm:px-6">
-          <div className="flex flex-col gap-2">
+      <div className="rounded-lg border-[6px] border-amber-950 bg-stone-200 p-2 shadow-xl shadow-slate-950/20 sm:border-[10px] sm:p-5 lg:p-6">
+        <div className="rounded border border-amber-900/30 bg-stone-100 px-2 py-4 sm:px-5 sm:py-5 lg:px-6">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
             {displayWires.map((wire) => (
               <Wire
                 isDragging={isDragging}
