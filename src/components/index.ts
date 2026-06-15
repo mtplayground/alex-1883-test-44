@@ -2,6 +2,8 @@ export { Bead } from './Bead';
 export type { BeadProps } from './Bead';
 export { AbacusBoard } from './AbacusBoard';
 export type { AbacusBoardProps } from './AbacusBoard';
+export { ResetControl } from './ResetControl';
+export type { ResetControlProps } from './ResetControl';
 export { ValueReadout } from './ValueReadout';
 export type { ValueReadoutProps } from './ValueReadout';
 export { Wire } from './Wire';

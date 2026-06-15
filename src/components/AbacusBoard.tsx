@@ -4,9 +4,11 @@ import {
   DEFAULT_WIRE_COUNT,
   createAbacusState,
   isValidWireCount,
+  resetAbacusState,
   slideAbacusBead,
 } from '../domain/abacus';
 import type { AbacusState, BeadIndex, WireIndex } from '../domain/abacus';
+import { ResetControl } from './ResetControl';
 import { ValueReadout } from './ValueReadout';
 import { Wire } from './Wire';
 
@@ -57,6 +59,10 @@ export function AbacusBoard({
       slideAbacusBead(currentState, wireIndex, beadIndex),
     );
   };
+  const handleReset = () => {
+    setIsDragging(false);
+    setBoardState((currentState) => resetAbacusState(currentState));
+  };
 
   const displayWires = [...boardState.wires].reverse();
 
@@ -66,7 +72,10 @@ export function AbacusBoard({
       className={['flex w-full flex-col gap-4', className].join(' ')}
       data-wire-count={boardState.wires.length}
     >
-      <ValueReadout state={boardState} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <ValueReadout className="sm:flex-1" state={boardState} />
+        <ResetControl onReset={handleReset} />
+      </div>
 
       <div className="rounded-lg border-[10px] border-amber-950 bg-stone-200 p-4 shadow-xl shadow-slate-950/20 sm:p-6">
         <div className="rounded border border-amber-900/30 bg-stone-100 px-4 py-5 sm:px-6">
