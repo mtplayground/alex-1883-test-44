@@ -1,0 +1,59 @@
+Architecture plan for the abacus implementation
+
+Context
+- The issue set defines a Vite + React frontend for an interactive decimal abacus.
+- No PRODUCT.md is present in the repository, so no separate product brand/name is assumed.
+
+Module structure
+- Root tooling:
+  - package.json, vite.config.ts, tsconfig*.json for Vite + React + TypeScript.
+  - eslint/prettier config files for formatting and static checks.
+  - tailwind.config.*, postcss.config.*, src/index.css for Tailwind and base styling.
+- src/main.tsx:
+  - React entry point only.
+- src/App.tsx:
+  - App layout, board/readout/reset composition.
+- src/domain/abacus.ts:
+  - Shared plain data model and pure value/slide/reset functions.
+  - Types such as AbacusState, WireState, WireIndex, BeadIndex.
+- src/components/:
+  - Bead.tsx: visual bead primitive with interaction affordances.
+  - Wire.tsx: one wire with 10 beads and bead position rendering.
+  - AbacusBoard.tsx: frame, full set of decimal wires, state ownership or state callbacks.
+  - NumericReadout.tsx: live computed value display.
+  - ResetButton.tsx: reset command.
+- tests:
+  - Unit tests for src/domain/abacus.ts.
+  - End-to-end test for sliding beads, readout updates, and reset flow.
+
+Shared state model
+- Represent the board as a fixed number of decimal wires, each with a count of active/slid beads from 0 through 9.
+- Each wire represents a decimal place; value computation sums activeCount * 10^place.
+- Keep the domain layer framework-free so it can be unit-tested without React.
+- UI components should receive typed props and call domain functions rather than duplicating state logic.
+
+Issue dependencies
+- #1 initializes the Vite + React shell and TypeScript project foundation.
+- #2 adds Tailwind and base layout styling after the app shell exists.
+- #3 adds ESLint/Prettier once the project shape is established.
+- #4 defines the abacus model and shared domain types.
+- #5 depends on #4 and implements value computation.
+- #6 depends on #4 and implements bead slide and reset mechanics.
+- #7 depends on #5 and #6 and locks down domain behavior with unit tests.
+- #8 depends on #1 and #2 and creates Bead/Wire visual primitives.
+- #9 depends on #4 and #8 and composes the board with React state.
+- #10 depends on #6 and #9 and wires bead interaction into state transitions.
+- #11 depends on #5 and #9 and renders the live numeric readout.
+- #12 depends on #6 and #9 and adds reset behavior.
+- #13 depends on #10, #11, and #12 and covers the main abacus flow end to end.
+- #14 depends on the composed UI and interaction work, then applies responsive polish.
+- #15 depends on the completed app and test/build setup, then verifies production build and static deploy instructions.
+
+Key design decisions
+- Use TypeScript throughout to keep domain contracts explicit as issues build on each other.
+- Keep abacus rules in pure functions, separate from rendering and pointer/click handling.
+- Make bead interaction deterministic: choosing a bead on a wire sets that wire's active count to the represented count, with no hidden cross-wire carry.
+- Render 10 beads per wire as fixed-position elements so visual layout does not shift during interaction.
+- Prefer simple accessible controls: buttons for beads/reset, ARIA labels for place value and bead count, and visible focus states.
+- Start with a small fixed decimal capacity, then make the wire count configurable through the state factory if later issues need it.
+- Use Vitest for unit tests because it fits Vite projects naturally; use Playwright for the end-to-end browser flow when #13 is implemented.
