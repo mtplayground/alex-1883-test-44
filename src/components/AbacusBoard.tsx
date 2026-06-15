@@ -7,6 +7,7 @@ import {
   slideAbacusBead,
 } from '../domain/abacus';
 import type { AbacusState, BeadIndex, WireIndex } from '../domain/abacus';
+import { ValueReadout } from './ValueReadout';
 import { Wire } from './Wire';
 
 export interface AbacusBoardProps {
@@ -62,9 +63,11 @@ export function AbacusBoard({
   return (
     <section
       aria-label={`${boardState.wires.length}-wire abacus board`}
-      className={['w-full', className].join(' ')}
+      className={['flex w-full flex-col gap-4', className].join(' ')}
       data-wire-count={boardState.wires.length}
     >
+      <ValueReadout state={boardState} />
+
       <div className="rounded-lg border-[10px] border-amber-950 bg-stone-200 p-4 shadow-xl shadow-slate-950/20 sm:p-6">
         <div className="rounded border border-amber-900/30 bg-stone-100 px-4 py-5 sm:px-6">
           <div className="flex flex-col gap-2">
