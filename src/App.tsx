@@ -1,11 +1,13 @@
+import { AbacusBoard } from './components';
+
 function App() {
   return (
-    <main className="min-h-screen bg-stone-100 px-4 py-10 text-slate-900 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-stone-100 px-4 py-8 text-slate-900 sm:px-6 lg:px-8">
       <section
-        className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center"
+        className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl flex-col justify-center gap-8"
         aria-labelledby="app-title"
       >
-        <div className="w-full max-w-3xl rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+        <header className="max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-normal text-teal-700">
             Interactive decimal abacus
           </p>
@@ -16,10 +18,12 @@ function App() {
             Abacus workspace
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-            The React app shell is ready for the abacus model, board, controls,
-            and tests planned in the remaining issues.
+            Slide beads across each decimal wire to build whole numbers on a
+            simple ten-bead abacus.
           </p>
-        </div>
+        </header>
+
+        <AbacusBoard />
       </section>
     </main>
   );
